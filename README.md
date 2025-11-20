@@ -1,6 +1,6 @@
 # Wake On Mijia (wom)
 
-通过订阅巴法云主题并接收控制消息，在本地网络广播 WOL 魔术包以唤醒指定设备。项目提供 systemd 与 SysV init 两种安装方式，支持自动重连、心跳与日志轮转，适合守护进程部署。
+通过订阅巴法云主题并接收控制消息，在本地网络广播 WOL 魔术包以唤醒指定设备。项目提供 systemd 与 init 两种安装方式，支持自动重连、心跳与日志轮转，适合守护进程部署。
 
 ## 功能特性
 - 连接 `bemfa.com` 并订阅指定主题，收到 `on` 指令后发送 WOL 魔术包
@@ -20,7 +20,7 @@
 1. 准备环境
    - 具有 `python3` 的 Linux 主机
    - 可访问外网网络（连接 `bemfa.com:8344`）
-   - 设备网卡支持 WOL，且局域网允许 UDP 广播端口 `9`
+   - 设备网卡支持 WOL
 2. 配置参数
    - 编辑 `config.ini`：
      ```ini
@@ -68,7 +68,7 @@
   - 启动：`/etc/init.d/wom start`
   - 重启：`/etc/init.d/wom restart`
   - 停止：`/etc/init.d/wom stop`
-  - 开机自启（Debian/Ubuntu）：`sudo update-rc.d wom defaults`
+  - 开机自启：`/etc/init.d/bemfa_wol enable`
 
 ## 日志与排错
 - 业务日志：`wol.log`（与 `main.py` 同目录），超过 5MB 轮转到 `wol.log.bak`
@@ -94,11 +94,7 @@
   - 删除单元文件：`sudo rm /etc/systemd/system/wom.service && sudo systemctl daemon-reload`
 - init：
   - 停止并删除脚本：`/etc/init.d/wom stop && sudo rm /etc/init.d/wom`
-  - 取消自启（Debian/Ubuntu）：`sudo update-rc.d -f wom remove`
 
 ## 安全建议
 - 不要在公共仓库中提交真实 UID
 - 如需非 `root` 运行，请为运行用户配置访问日志/工作目录权限
-
-## 许可证
-- 未设置许可证。如需开源发布，请添加合适的许可证文件。
