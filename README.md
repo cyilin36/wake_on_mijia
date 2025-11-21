@@ -40,10 +40,18 @@
 
      [device]
      mac=<你的设备MAC，如 CC:28:AA:04:00:53>
+     ip=<你的设备IP，如 192.168.1.100>
+     user=<你的设备ssh登录用户名>
+     password=<你的设备ssh登录密码>
      ```
 
    - 其中uid为巴法云分配给你的私钥
    - name是巴法云创建的TCP设备云的主题名称（以三位数字006结尾，006代表开关类型）
+   - mac是你的目标远程开机设备MAC地址，用于发送WOL魔术包远程开机。
+   - 目标主机需要开启bios的wol相关唤醒功能，在设备管理器中右键打开网卡属性，在高级选项卡打开“魔术封包唤醒”，在电源管理选项卡中将“允许此设备唤醒计算机”勾选上。
+   - ip,user,password是你的设备ssh登录的ip,用户名,密码，如不需要远程关机可以不设置
+   - 在powershell中用`whoami`可以查看自己的用户名
+   - 如果是微软账户登录的，ssh的登录密码为微软账户密码，否则为Windows本地密码
 
 4. 远程关机配置（如不需要设置关机可以跳过）
 
@@ -62,35 +70,15 @@
    New-NetFirewallRule -Name sshd -Protocol TCP -LocalPort 22 -Action Allow
    ```
 
-   - 在powershell中用`whoami`可以查看自己的用户名
-   - 在 `C:\Users\<User>\` 下创建 `.ssh` 目录与 `authorized_keys` 文件，并设置权限，`<User>`手动替换成自己的用户名：
-
-   ```powershell
-   icacls "C:\Users\<User>\.ssh" /inheritance:r
-   icacls "C:\Users\<User>\.ssh" /grant <User>:F
-   icacls "C:\Users\<User>\.ssh\authorized_keys" /inheritance:r
-   icacls "C:\Users\<User>\.ssh\authorized_keys" /grant <User>:F
-   ```
-
-   - 生成 SSH 密钥并通过ssh复制到Windows用户目录下，手动将 `~/.ssh/id_rsa.pub` 内容添加到 Windows 的 `authorized_keys` 中：
-
-   ```bash
-   ssh-keygen
-   ssh-copy-id user@windows_ip
-   ```
-
-   - 测试连接
-
-   ```bash
-   ssh -o StrictHostKeyChecking=no user@windows_ip
-   ```
-
 5. 在Linux主机安装本服务
    - 执行：`sudo bash install.sh`或者`./install.sh`
    - 按提示输入 `main.py` 的绝对路径，例如：`/root/bemfa/wol/main.py`
    - 脚本将自动：
      - 若支持 systemd：生成并安装 `wom.service`，启用并启动
      - 若不支持 systemd：生成 `/etc/init.d/wom`，注册并启动
+   - 若需要远程关机服务，请确保系统有以下环境：
+     - ssh连接远端主机的环境，如openssh-client
+     - sshpass：用于在脚本中自动输入ssh密码，安装命令如`apt install sshpass`，`opkg install sshpass`
 
 6. 验证运行
    - systemd：

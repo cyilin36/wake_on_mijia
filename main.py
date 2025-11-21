@@ -58,7 +58,7 @@ def wol(mac):
     log(f"[WOL] 已发送魔术包到 {mac}")
 
 # ---------  ssh shutdown 功能 ------------
-def shutdown_windows(ip, user,pwd):
+def shutdown_windows(ip, user, pwd):
     try:
         if shutil.which("sshpass") and pwd:
             cmd = [
