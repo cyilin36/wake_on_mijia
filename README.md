@@ -116,6 +116,20 @@
   - 重启：`/etc/init.d/wom restart`
   - 停止：`/etc/init.d/wom stop`
   - 开机自启：`/etc/init.d/bemfa_wol enable`
+  
+## Docker compose部署
+
+```bash
+services:
+  wake_on_mijia:
+    image: ghcr.io/cyilin36/wake_on_mijia:latest
+    container_name: wake_on_mijia
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - ./config.ini:/app/config.ini  # 挂载配置文件
+      - ./wol.log:/app/wol.log        # 挂载日志文件
+```
 
 ## 日志与排错
 

@@ -1,0 +1,9 @@
+services:
+  wake_on_mijia:
+    image: cyilin36/wake_on_mijia:latest
+    container_name: wake_on_mijia
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - ./config.ini:/app/config.ini
+      - ./wol.log:/app/wol.log
